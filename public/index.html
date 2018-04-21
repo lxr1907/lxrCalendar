@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>周打卡工具</title>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+    <script>
+        $(function () {
+            $("#setMatterView").hide();
+            $('#timespan').html(getWeekStartAndEnd(0));
+            $('#setMatterBtn').click(function () {
+                $("#tableView").hide();
+                $("#setMatterView").show();
+            });
+            $("#backBtn").click(function () {
+                $("#tableView").show();
+                $("#setMatterView").hide();
+            });
+        });
+
+        /**
+         * 获得相对当前周AddWeekCount个周的起止日期
+         * AddWeekCount为0代表当前周   为-1代表上一个周   为1代表下一个周以此类推
+         * **/
+        function getWeekStartAndEnd(AddWeekCount) {
+            //起止日期数组
+            var startStop = new Array();
+            //一天的毫秒数
+            var millisecond = 1000 * 60 * 60 * 24;
+            //获取当前时间
+            var currentDate = new Date();
+            //相对于当前日期AddWeekCount个周的日期
+            currentDate = new Date(currentDate.getTime() + (millisecond * 7 * AddWeekCount));
+            //返回date是一周中的某一天
+            var week = currentDate.getDay();
+            //返回date是一个月中的某一天
+            var month = currentDate.getDate();
+            //减去的天数
+            var minusDay = week != 0 ? week - 1 : 6;
+            //获得当前周的第一天
+            var currentWeekFirstDay = new Date(currentDate.getTime() - (millisecond * minusDay));
+            //获得当前周的最后一天
+            var currentWeekLastDay = new Date(currentWeekFirstDay.getTime() + (millisecond * 6));
+            //添加至数组
+            startStop.push(getDateStr3(currentWeekFirstDay));
+            startStop.push("----");
+            startStop.push(getDateStr3(currentWeekLastDay));
+
+            return startStop;
+        }
+
+        //获取当前日期yy-mm-dd
+        //date 为时间对象
+        function getDateStr3(date) {
+            var year = "";
+            var month = "";
+            var day = "";
+            var now = date;
+            year = "" + now.getFullYear();
+            if ((now.getMonth() + 1) < 10) {
+                month = "0" + (now.getMonth() + 1);
+            } else {
+                month = "" + (now.getMonth() + 1);
+            }
+            if ((now.getDate()) < 10) {
+                day = "0" + (now.getDate());
+            } else {
+                day = "" + (now.getDate());
+            }
+            return year + "." + month + "." + day;
+        }
+    </script>
+</head>
+<body>
+<div id="tableView">
+    <div id="timespan">2018年4月20日到2018年4月26日</div>
+    <div><input id="setMatterBtn" type="button" value="设置事项"></div>
+    <table id='checkTable' border="1">
+        <tr id='checkTableHead'>
+            <th style="width: 120px;">事项</th>
+            <th>周一</th>
+            <th>周二</th>
+            <th>周三</th>
+            <th>周四</th>
+            <th>周五</th>
+            <th>周六</th>
+            <th>周日</th>
+        </tr>
+    </table>
+</div>
+<div id="setMatterView">
+    <input id="backBtn" type="button"
+           value="返回">
+    <div></div>
+    <div><span>名称：</span><input id="matterTxt" type="text" style="width: 120px;"><input id="addMatterBtn" type="button"
+                                                                                        value="增加事项"></div>
+</div>
+</body>
+</html>
